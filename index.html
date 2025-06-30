@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Service Connect - Accueil</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 40px;
+    }
+    .btn {
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s ease;
+      width: 200px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenue sur Service Connect</h1>
+  <button class="btn" id="btnRegister">S'inscrire</button>
+  <button class="btn" id="btnLogin">Se connecter</button>
+
+  <script>
+    document.getElementById('btnRegister').addEventListener('click', () => {
+      window.location.href = 'inscription.html';
+    });
+    document.getElementById('btnLogin').addEventListener('click', () => {
+      window.location.href = 'connexion.html';
+    });
+  </script>
+</body>
+</html>
