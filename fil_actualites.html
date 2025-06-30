@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Service Connect - Fil d'actualités</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header id="fil-header" class="fade-in">
+    <input type="search" id="search-input" placeholder="Rechercher des services..." />
+    <button id="btn-filter">Filtrer</button>
+    <button id="profile-icon" title="Profil" aria-label="Profil">👤</button>
+  </header>
+
+  <section id="services-list" style="max-width: 700px; margin: auto; padding: 15px;"></section>
+
+  <script src="script.js"></script>
+  <script>
+    // Redirige vers profil au clic sur icône profil
+    document.getElementById('profile-icon').addEventListener('click', () => {
+      window.location.href = 'profil.html';
+    });
+
+    // Charge les services (postes)
+    async function loadServices(query = '') {
+      try {
+        const res = await fetch('https://scnew1.onrender.com/api/services' + (query ? `?q=${encodeURIComponent(query)}` : ''));
+        if (!res.ok) throw new Error('Erreur chargement services');
+        const services = await res.json();
+        const container = document.getElementById('services-list');
+        container.innerHTML = '';
+        if (services.length === 0) {
+          container.innerHTML = '<p style="color:#ccc; text-align:center;">Aucun service trouvé.</p>';
+          return;
+        }
+        services.forEach(s => {
+          const card = document.createElement('article');
+          card.classList.add('service-card');
+          card.innerHTML = `
+            <h3>${s.username}</h3>
+            <p>${s.content}</p>
+            <div class="date">${new Date(s.createdAt).toLocaleString()}</div>
+            <button class="demander-btn">Demander</button>
+          `;
+          // Click bouton demander = redirection vers messagerie (ici on fait simple, tu peux ajuster)
+          card.querySelector('.demander-btn').addEventListener('click', () => {
+            window.location.href = `messagerie.html?userId=${s.userId}&username=${encodeURIComponent(s.username)}`;
+          });
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        alert('Erreur lors du chargement des services');
+      }
+    }
+
+    // Recherche
+    const searchInput = document.getElementById('search-input');
+    let searchTimeout;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        loadServices(searchInput.value.trim());
+      }, 400);
+    });
+
+    // Chargement initial
+    loadServices();
+
+    // Gestion fade-in
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.fade-in').forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if (top < window.innerHeight * 0.9) el.classList.add('visible');
+      });
+    });
+  </script>
+</body>
+</html>
