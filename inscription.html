@@ -54,30 +54,15 @@
       }
 
       try {
-        const body = {
-          phone: telephone,
-          lastname: nom,
-          firstname: prenom,
-          password,
-          accountType: typeCompte
-        };
-
-        const res = await fetch('https://scnew1.onrender.com/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.success) {
+        const data = await registerUser({ nom, prenom, telephone, password, typeCompte });
+        if (data.success) {
           alert('Inscription réussie ! Vous allez être redirigé vers la page de connexion.');
           window.location.href = 'connexion.html';
         } else {
           alert(data.error || 'Erreur lors de l\'inscription');
         }
       } catch (err) {
-        alert('Erreur réseau ou serveur.');
+        alert(err.message || 'Erreur réseau ou serveur.');
         console.error(err);
       }
     });
