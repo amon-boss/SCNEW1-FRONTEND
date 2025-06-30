@@ -32,7 +32,6 @@
 
   <script src="script.js"></script>
   <script>
-    // Validation & envoi du formulaire inscription
     document.getElementById('inscription-form').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -54,17 +53,13 @@
         return;
       }
 
-      // Préparation données pour backend
       try {
-        // On concatène nom + prenom comme username (pour le backend)
-        const username = `${nom} ${prenom}`;
-
         const body = {
-          contact: telephone,
+          phone: telephone,
+          lastname: nom,
+          firstname: prenom,
           password,
-          username,
-          typeCompte,
-          isAnonymous: false
+          accountType: typeCompte
         };
 
         const res = await fetch('https://scnew1.onrender.com/api/auth/register', {
