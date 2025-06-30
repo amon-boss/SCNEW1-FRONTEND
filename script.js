@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       footerContainer.innerHTML = html;
       document.body.appendChild(footerContainer);
       setupFooterButtons();
+      fadeInOnScroll(); // au chargement pour ceux déjà visibles
     })
     .catch(console.error);
 });
@@ -64,7 +65,7 @@ function isLoggedIn() {
   return !!getToken();
 }
 
-// Fonction helper fetch avec token dans header si connecté
+// Helper fetch avec token dans header si connecté
 async function apiFetch(endpoint, options = {}) {
   options.headers = options.headers || {};
   if (isLoggedIn()) {
@@ -76,4 +77,20 @@ async function apiFetch(endpoint, options = {}) {
     throw new Error(err.error || 'Erreur API');
   }
   return res.json();
+}
+
+// Fonction d'inscription adaptée au backend
+async function registerUser({ nom, prenom, telephone, password, typeCompte }) {
+  const body = {
+    phone: telephone,
+    lastname: nom,
+    firstname: prenom,
+    password: password,
+    accountType: typeCompte
+  };
+  return await apiFetch('/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
 }
