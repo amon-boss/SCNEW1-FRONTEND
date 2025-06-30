@@ -8,18 +8,30 @@
 </head>
 <body>
   <main class="fade-in" style="margin-top: 50px;">
-    <h2 style="text-align:center; margin-bottom: 30px; color: #fff;">Connexion</h2>
+    <h2 style="text-align:center; margin-bottom: 30px; color: #fff;">Se connecter</h2>
     <form id="connexion-form" novalidate>
-      <input type="text" name="userInput" placeholder="Numéro ou Nom" required />
-      <input type="password" name="password" placeholder="Mot de passe" required minlength="6" />
+      <input
+        type="tel"
+        name="telephone"
+        placeholder="Numéro de téléphone"
+        pattern="^\+?\d{8,15}$"
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Mot de passe"
+        required
+        minlength="6"
+      />
       <label style="display:flex; align-items:center; gap: 6px; margin: 15px 0;">
-        <input type="checkbox" name="rememberMe" />
+        <input type="checkbox" name="remember" />
         <span>Se souvenir de moi</span>
       </label>
-      <button type="submit">Se connecter</button>
+      <button type="submit">Connexion</button>
     </form>
     <p style="text-align:center; margin-top: 20px; color:#ccc;">
-      Pas encore de compte ? <a href="inscription.html" style="color:#6d4bca;">Inscrivez-vous ici</a>
+      Pas encore de compte ? <a href="register.html" style="color:#6d4bca;">Inscrivez-vous ici</a>
     </p>
   </main>
 
@@ -30,46 +42,44 @@
 
       const form = e.target;
       if (!form.checkValidity()) {
-        alert("Veuillez remplir tous les champs.");
+        alert("Veuillez remplir correctement tous les champs.");
         return;
       }
 
-      const userInput = form.userInput.value.trim();
+      const telephone = form.telephone.value.trim();
       const password = form.password.value;
-      const rememberMe = form.rememberMe.checked;
+      const remember = form.remember.checked;
 
       try {
+        const body = {
+          identifier: telephone,
+          password,
+        };
+
         const res = await fetch('https://scnew1.onrender.com/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userInput, password })
+          body: JSON.stringify(body),
         });
 
         const data = await res.json();
 
         if (res.ok && data.success) {
-          saveToken(data.token);
-          // Si pas rememberMe on ne conserve que sessionStorage (optionnel)
-          if (!rememberMe) {
-            sessionStorage.setItem('temp_token', data.token);
-          } else {
-            localStorage.setItem('sc_token', data.token);
-          }
           alert('Connexion réussie !');
+          // Tu peux ici enregistrer token dans localStorage/sessionStorage selon 'remember'
+          if (remember) {
+            localStorage.setItem('token', data.token);
+          } else {
+            sessionStorage.setItem('token', data.token);
+          }
+          // Redirection vers fil d'actualités
           window.location.href = 'fil_actualites.html';
         } else {
-          alert(data.error || 'Identifiants incorrects');
+          alert(data.error || 'Erreur lors de la connexion');
         }
       } catch (err) {
         alert('Erreur réseau ou serveur.');
         console.error(err);
-      }
-    });
-
-    // Gestion token temporaire si sessionStorage utilisé
-    window.addEventListener('load', () => {
-      if (!getToken() && sessionStorage.getItem('temp_token')) {
-        saveToken(sessionStorage.getItem('temp_token'));
       }
     });
   </script>
