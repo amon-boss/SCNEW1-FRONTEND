@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Connect - Conditions d'utilisation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container text-page-container">
+        <header class="main-header">
+            <a href="javascript:history.back()" class="back-link animate-btn"><i class="fas fa-arrow-left"></i> Retour</a>
+            <h2>Conditions d’utilisation</h2>
+        </header>
+        <main class="text-content">
+            <h3>1. Objet</h3>
+            <p>Les présentes conditions d’utilisation régissent l’accès et l’utilisation du site Service Connect, qui met en relation des Prestataires et des Particuliers.</p>
+
+            <h3>2. Acceptation des conditions</h3>
+            <p>En utilisant ce site, vous acceptez sans réserve les présentes conditions. Si vous n’êtes pas d’accord, veuillez ne pas utiliser le site.</p>
+
+            <h3>3. Accès au service</h3>
+            <p>L’accès au site est gratuit, mais certains services peuvent être payants. Vous êtes responsable de la confidentialité de vos identifiants.</p>
+
+            <h3>4. Inscription</h3>
+            <p>Pour accéder à certaines fonctionnalités, une inscription est nécessaire. Vous vous engagez à fournir des informations exactes et à les mettre à jour.</p>
+
+            <h3>5. Utilisation du service</h3>
+            <p>Vous vous engagez à utiliser Service Connect conformément à la loi, à ne pas diffuser de contenu illégal, diffamatoire ou contraire aux bonnes mœurs.</p>
+
+            <h3>6. Mise en relation</h3>
+            <p>Service Connect facilite la mise en relation entre Prestataires et Particuliers, mais n’intervient pas dans l’exécution des prestations. Toute relation contractuelle est directement conclue entre les utilisateurs.</p>
+
+            <h3>7. Responsabilité</h3>
+            <p>Service Connect ne peut être tenu responsable des litiges, dommages ou pertes résultant des prestations réalisées entre utilisateurs.</p>
+
+            <h3>8. Propriété intellectuelle</h3>
+            <p>Les contenus du site sont protégés. Toute reproduction ou utilisation sans autorisation est interdite.</p>
+
+            <h3>9. Modification des conditions</h3>
+            <p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les utilisateurs seront informés des changements.</p>
+
+            <h3>10. Loi applicable et juridiction</h3>
+            <p>Les présentes conditions sont soumises au droit Ivoirien. En cas de litige, les tribunaux Ivoiriens seront compétents.</p>
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger le footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-placeholder').innerHTML = html;
+                });
+        });
+    </script>
+</body>
+</html>
