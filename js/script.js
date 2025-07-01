@@ -1,450 +1,396 @@
-const BASE_URL = 'https://scnew1.onrender.com/api'; // Correction: Ajouter /api car vos routes backend commencent par /api
+document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE_URL = 'https://scnew1.onrender.com/api'; // Remplacez par l'URL de votre backend Render
 
-// Helper pour afficher les messages
-function showMessage(elementId, message, type = 'error') {
-    const messageElement = document.getElementById(elementId);
-    if (messageElement) {
-        messageElement.textContent = message;
-        messageElement.className = `message-area ${type}`;
-        messageElement.style.display = 'block';
-        // Cache le message après 5 secondes
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-            messageElement.textContent = '';
-        }, 5000);
-    }
-}
-
-// Helper pour obtenir le token JWT
-function getToken() {
-    return localStorage.getItem('token');
-}
-
-// Helper pour obtenir les informations utilisateur du localStorage
-function getUserInfo() {
-    const userString = localStorage.getItem('user');
-    return userString ? JSON.parse(userString) : null;
-}
-
-// Helper pour stocker les informations utilisateur
-function setUserInfo(user) {
-    localStorage.setItem('user', JSON.stringify(user));
-}
-
-// Redirection si non authentifié ou pour le tableau de bord
-function checkAuthAndRedirect() {
-    const token = getToken();
-    // Utiliser window.location.pathname pour obtenir le chemin après le domaine
-    // Puis split('/').pop() pour obtenir le nom du fichier HTML
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html'; // Si vide, c'est la racine
-
-    // Redirige vers la page de connexion si pas de token sur les pages protégées
-    if (!token && (currentPage === 'dashboard.html' || currentPage === 'profile.html')) {
-        window.location.href = 'login.html';
-        return true; // Indique qu'une redirection a eu lieu
-    }
-    // Redirige vers le dashboard si déjà connecté sur les pages publiques (accueil, connexion, inscription)
-    // S'assurer que le token existe pour cette redirection
-    else if (token && (currentPage === 'index.html' || currentPage === 'login.html' || currentPage === 'register.html')) {
-        window.location.href = 'dashboard.html';
-        return true; // Indique qu'une redirection a eu lieu
-    }
-    // Ne rien faire si l'utilisateur est sur une page publique sans être connecté
-    // ou sur une page protégée en étant connecté.
-    return false; // Pas de redirection nécessaire
-}
-
-// --- Fonctions d'authentification ---
-
-// Inscription
-async function handleRegister(event) {
-    event.preventDefault(); // Empêche le rechargement de la page
-    const phone = document.getElementById('phone').value;
-    const lastname = document.getElementById('lastname').value;
-    const firstname = document.getElementById('firstname').value; 
-    const password = document.getElementById('password').value;
-    const accountType = document.querySelector('input[name="accountType"]:checked').value;
-    const acceptTerms = document.getElementById('acceptTerms').checked;
-
-    const phoneError = document.getElementById('phoneError');
-    const passwordError = document.getElementById('passwordError');
-
-    if (phoneError) phoneError.textContent = '';
-    if (passwordError) passwordError.textContent = '';
-
-    if (password.length < 6) {
-        if (passwordError) passwordError.textContent = 'Le mot de passe doit contenir au moins 6 caractères.';
-        return;
+    // Fonction pour charger le footer
+    function loadFooter() {
+        fetch('includes/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                const footerPlaceholder = document.getElementById('footer-placeholder');
+                if (footerPlaceholder) {
+                    footerPlaceholder.innerHTML = data;
+                }
+            })
+            .catch(error => console.error('Erreur lors du chargement du footer:', error));
     }
 
-    if (!/^\d{10}$/.test(phone)) {
-        if (phoneError) phoneError.textContent = 'Le numéro de téléphone doit contenir 10 chiffres.';
-        return;
-    }
+    loadFooter();
 
-    if (!acceptTerms) {
-        showMessage('registerMessage', 'Vous devez accepter la politique d\'utilisation.', 'error');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${BASE_URL}/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ phone, lastname, firstname, password, accountType }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            showMessage('registerMessage', 'Inscription réussie ! Redirection vers la page de connexion...', 'success');
+    // Fonction pour les messages d'alerte temporaires
+    function showAlert(message, type = 'error', targetElementId = 'alert-message') {
+        const alertDiv = document.getElementById(targetElementId);
+        if (alertDiv) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.classList.remove('hidden');
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
-        } else {
-            showMessage('registerMessage', data.error || 'Erreur lors de l\'inscription.');
+                alertDiv.classList.add('hidden');
+            }, 5000);
         }
-    } catch (error) {
-        console.error('Erreur lors de l\'inscription:', error);
-        showMessage('registerMessage', 'Une erreur réseau est survenue ou le serveur est inaccessible. Veuillez réessayer plus tard.');
-    }
-}
-
-// ✅ Rendre la fonction visible globalement pour le navigateur (notamment sur Android)
-window.handleRegister = handleRegister;
-}
-
-// Connexion
-async function handleLogin(event) {
-    event.preventDefault(); // Empêche le rechargement de la page
-    const phone = document.getElementById('loginPhone').value;
-    const password = document.getElementById('loginPassword').value;
-    const rememberMe = document.getElementById('rememberMe').checked; // Gérer si nécessaire
-
-    try {
-        const response = await fetch(`${BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ phone, password }),
-        });
-
-        const data = await response.json(); // Toujours tenter de parser la réponse JSON
-
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            setUserInfo(data.user); // Stocke toutes les infos user
-            showMessage('loginMessage', 'Connexion réussie ! Redirection vers le fil d\'actualités...', 'success');
-
-            // Le "rememberMe" est implicitement géré par l'expiration du JWT (7j)
-            // Si vous voulez une persistance plus longue, un "refresh token" côté backend serait nécessaire.
-
-            // Redirection après un court délai
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
-        } else {
-            showMessage('loginMessage', data.error || 'Identifiants invalides ou erreur de connexion.');
-        }
-    } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        showMessage('loginMessage', 'Une erreur réseau est survenue ou le serveur est inaccessible. Veuillez réessayer plus tard.');
-    }
-}
-
-// Déconnexion
-function handleLogout() {
-    localStorage.removeItem('token'); // Supprime le token
-    localStorage.removeItem('user'); // Supprime les informations utilisateur
-    window.location.href = 'index.html'; // Redirige vers la page d'accueil
-}
-
-// --- Fonctions du Tableau de Bord ---
-
-// Affiche le message de bienvenue avec le nom de l'utilisateur
-function displayUserGreeting() {
-    const user = getUserInfo();
-    const userGreetingElement = document.getElementById('userGreeting');
-    if (user && userGreetingElement) {
-        userGreetingElement.textContent = `Bonjour, ${user.firstname || 'Utilisateur'}!`;
-    }
-}
-
-// Charge les services sur le fil d'actualités
-async function loadServices(searchQuery = '', categoryFilter = '') {
-    const servicesFeed = document.getElementById('servicesFeed');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const noServicesMessage = document.getElementById('noServicesMessage');
-
-    if (!servicesFeed) return; // Quitter si l'élément n'est pas trouvé (pas sur la bonne page)
-
-    servicesFeed.innerHTML = ''; // Nettoyer les services existants
-    if (loadingSpinner) loadingSpinner.style.display = 'block';
-    if (noServicesMessage) noServicesMessage.style.display = 'none';
-
-    let url = `${BASE_URL}/services`; // Utilise la BASE_URL configurée avec /api
-    const params = new URLSearchParams();
-    if (searchQuery) {
-        params.append('search', searchQuery);
-    }
-    if (categoryFilter) {
-        params.append('category', categoryFilter);
-    }
-    if (params.toString()) {
-        url += `?${params.toString()}`;
     }
 
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                // Pas besoin d'autorisation pour GET /services (route publique)
-            },
-        });
+    // Fonction pour gérer la redirection après connexion/déconnexion
+    function redirectTo(path) {
+        window.location.href = path;
+    }
 
-        // Vérifier si la réponse est JSON valide avant de parser
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-            const services = await response.json();
+    // Gestion de l'inscription (Page register.html)
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const lastname = document.getElementById('lastname').value;
+            const firstname = document.getElementById('firstname').value;
+            const password = document.getElementById('password').value;
+            const accountType = document.querySelector('input[name="accountType"]:checked').value;
+            const termsAccepted = document.getElementById('terms').checked;
 
-            if (loadingSpinner) loadingSpinner.style.display = 'none';
-
-            if (services.length === 0) {
-                if (noServicesMessage) noServicesMessage.style.display = 'block';
-            } else {
-                services.forEach(service => {
-                    const serviceCard = document.createElement('div');
-                    serviceCard.className = 'service-card animate-on-scroll';
-
-                    const initials = `${service.firstname ? service.firstname[0] : ''}${service.lastname ? service.lastname[0] : ''}`.toUpperCase();
-                    // Assurer un format de date correct
-                    const date = service.createdAt ? new Date(service.createdAt).toLocaleDateString('fr-FR', {
-                        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                    }) : 'Date inconnue';
-                    const locationText = service.location ? `à ${service.location}` : '';
-
-                    serviceCard.innerHTML = `
-                        <div class="card-header">
-                            <div class="user-avatar">${initials || '?'}</div>
-                            <div class="user-info">
-                                <h4>${service.firstname || 'Utilisateur'} ${service.lastname || ''}</h4>
-                                <span>Posté le ${date} ${locationText}</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p>${service.content || 'Pas de description.'}</p>
-                            <p class="category-tag">Catégorie: ${service.category || 'Non spécifiée'}</p>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-primary animate-btn request-service-btn" data-user-id="${service.userId}" data-service-id="${service._id}" data-poster-name="${service.firstname} ${service.lastname}">Demander</button>
-                        </div>
-                    `;
-                    servicesFeed.appendChild(serviceCard);
-                });
-
-                // Animation au scroll - attacher l'observateur après que les cartes soient ajoutées
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('active');
-                            observer.unobserve(entry.target); // Arrêter d'observer une fois l'animation déclenchée
-                        }
-                    });
-                }, { threshold: 0.1 });
-
-                document.querySelectorAll('.animate-on-scroll').forEach(card => {
-                    observer.observe(card);
-                });
+            if (password.length < 6) {
+                showAlert('Le mot de passe doit contenir au moins 6 caractères.');
+                return;
             }
-        } else {
-            // Si la réponse n'est pas JSON, cela indique une erreur serveur (ex: 500 HTML)
-            throw new Error(`Réponse non JSON reçue: ${response.status} ${response.statusText}`);
-        }
-    } catch (error) {
-        console.error('Erreur lors du chargement des services:', error);
-        if (loadingSpinner) loadingSpinner.style.display = 'none';
-        if (servicesFeed) servicesFeed.innerHTML = '<p class="error-message" style="text-align:center;">Impossible de charger les services. Veuillez réessayer.</p>';
+            if (!termsAccepted) {
+                showAlert('Vous devez accepter la politique d\'utilisation.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, lastname, firstname, password, accountType })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success');
+                    setTimeout(() => redirectTo('login.html'), 2000);
+                } else {
+                    showAlert(data.error || "Erreur lors de l'inscription.");
+                }
+            } catch (error) {
+                console.error('Erreur inscription:', error);
+                showAlert("Erreur réseau ou serveur.");
+            }
+        });
     }
-}
 
-// Configure les écouteurs d'événements pour le tableau de bord
-function setupDashboardEvents() {
-    // Vérifiez si les éléments existent avant d'ajouter des écouteurs
-    const searchInput = document.getElementById('searchServices');
-    const searchButton = document.getElementById('searchButton');
-    const filterCategory = document.getElementById('filterCategory');
-    const servicesFeed = document.getElementById('servicesFeed');
+    // Gestion de la connexion (Page login.html)
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('identifier').value; // Peut être phone ou lastname
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
 
-    if (searchInput && searchButton && filterCategory && servicesFeed) {
-        displayUserGreeting(); // Affiche le nom de l'utilisateur
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user)); // Stocker les infos de l'utilisateur
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    } else {
+                        localStorage.removeItem('rememberMe');
+                    }
+                    showAlert('Connexion réussie !', 'success');
+                    setTimeout(() => redirectTo('newsfeed.html'), 1500);
+                } else {
+                    showAlert(data.error || "Identifiants invalides.");
+                }
+            } catch (error) {
+                console.error('Erreur connexion:', error);
+                showAlert("Erreur réseau ou serveur.");
+            }
+        });
+
+        // Auto-remplir si "Se souvenir de moi" est coché
+        if (localStorage.getItem('rememberMe') === 'true' && localStorage.getItem('user')) {
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            // Il faudrait que le backend renvoie l'identifiant (phone ou lastname) pour pouvoir le pré-remplir
+            // Pour l'instant, on ne peut pas pré-remplir le champ `identifier` de manière fiable juste avec `user`
+            // car votre backend n'expose pas le mot de passe, ce qui est normal.
+            // On peut juste se souvenir que l'utilisateur veut rester connecté et le rediriger directement.
+            // Pour le moment, l'option "se souvenir" redirigera directement si déjà connecté.
+        }
+    }
+
+    // Vérifier si l'utilisateur est déjà connecté au chargement de la page d'accueil ou de connexion
+    const token = localStorage.getItem('token');
+    const rememberMe = localStorage.getItem('rememberMe');
+
+    // Rediriger vers le fil d'actualité si déjà connecté et "Se souvenir de moi"
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html' || window.location.pathname === '/login.html') {
+        if (token && rememberMe === 'true') {
+            // Tenter de récupérer les infos utilisateur pour valider le token
+            fetch(`${API_BASE_URL}/users/me`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(response => {
+                if (response.ok) {
+                    redirectTo('newsfeed.html');
+                } else {
+                    // Token invalide ou expiré, effacer et rester sur la page actuelle
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('rememberMe');
+                }
+            }).catch(() => {
+                // Erreur réseau, rester sur la page actuelle
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('rememberMe');
+            });
+        }
+    }
+
+
+    // Gestion de la page du fil d'actualités (newsfeed.html)
+    const newsfeedPage = document.getElementById('newsfeed-page');
+    if (newsfeedPage) {
+        const profileIcon = document.getElementById('profile-icon');
+        const serviceListContainer = document.getElementById('service-list');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const user = JSON.parse(localStorage.getItem('user')); // Récupérer l'utilisateur connecté
+
+        if (!token) {
+            showAlert('Veuillez vous connecter pour accéder au fil d\'actualités.', 'error', 'newsfeed-alert-message');
+            setTimeout(() => redirectTo('login.html'), 2000);
+            return;
+        }
+
+        profileIcon.addEventListener('click', () => redirectTo('profile.html'));
+
+        // Fonction pour afficher les services
+        async function fetchAndDisplayServices(searchTerm = '') {
+            try {
+                let url = `${API_BASE_URL}/services`;
+                if (searchTerm) {
+                    url += `/search?query=${encodeURIComponent(searchTerm)}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const services = await response.json();
+
+                if (response.ok) {
+                    serviceListContainer.innerHTML = ''; // Vider la liste existante
+                    if (services.length === 0) {
+                        serviceListContainer.innerHTML = '<p class="no-services-message">Aucun service trouvé pour votre recherche.</p>';
+                        return;
+                    }
+
+                    services.forEach(service => {
+                        const card = document.createElement('div');
+                        card.classList.add('service-card', 'animated'); // Ajout de la classe animated
+                        const initials = (service.firstname ? service.firstname[0] : '') + (service.lastname ? service.lastname[0] : '');
+                        const postedDate = new Date(service.createdAt).toLocaleDateString('fr-FR', {
+                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                        });
+
+                        card.innerHTML = `
+                            <div class="service-header">
+                                <div class="profile-initials">${initials.toUpperCase()}</div>
+                                <div class="service-info">
+                                    <h4>${service.firstname} ${service.lastname}</h4>
+                                    <p>Posté le ${postedDate} à ${service.location}</p>
+                                </div>
+                            </div>
+                            <div class="service-content">
+                                <p>${service.content}</p>
+                            </div>
+                            <button class="btn btn-request" data-user-id="${service.userId}" data-service-id="${service._id}">Demander</button>
+                        `;
+                        serviceListContainer.appendChild(card);
+                    });
+
+                    // Ajouter les écouteurs d'événements pour les boutons "Demander"
+                    document.querySelectorAll('.btn-request').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const serviceUserId = e.target.dataset.userId;
+                            const serviceId = e.target.dataset.serviceId;
+                            // Redirection vers la page de messagerie (à implémenter plus tard)
+                            showAlert(`Fonctionnalité de messagerie pour le service ${serviceId} de l'utilisateur ${serviceUserId} à implémenter.`, 'success', 'newsfeed-alert-message');
+                        });
+                    });
+
+                } else {
+                    showAlert(services.error || "Erreur lors du chargement des services.", 'error', 'newsfeed-alert-message');
+                }
+            } catch (error) {
+                console.error('Erreur chargement services:', error);
+                showAlert("Erreur réseau lors du chargement des services.", 'error', 'newsfeed-alert-message');
+            }
+        }
+
+        fetchAndDisplayServices(); // Charger les services au chargement de la page
 
         searchButton.addEventListener('click', () => {
-            loadServices(searchInput.value, filterCategory.value);
+            fetchAndDisplayServices(searchInput.value);
         });
 
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                loadServices(searchInput.value, filterCategory.value);
-            }
-        });
-
-        filterCategory.addEventListener('change', () => {
-            loadServices(searchInput.value, filterCategory.value);
-        });
-
-        // Délégation d'événements pour les boutons "Demander"
-        servicesFeed.addEventListener('click', (event) => {
-            if (event.target.classList.contains('request-service-btn')) {
-                const posterName = event.target.dataset.posterName;
-                alert(`Fonctionnalité de messagerie avec ${posterName} en cours de développement !`);
-                // Pour une implémentation réelle, redirigerait vers une page de chat ou ouvrirait un modal
-                // window.location.href = `message.html?userId=${event.target.dataset.userId}`;
+                fetchAndDisplayServices(searchInput.value);
             }
         });
     }
-}
 
+    // Gestion de la page de profil (profile.html)
+    const profilePage = document.getElementById('profile-page');
+    if (profilePage) {
+        const userProfileDiv = document.getElementById('user-profile-details');
+        const accountTypeDisplay = document.getElementById('account-type-display');
+        const toggleAccountTypeBtn = document.getElementById('toggle-account-type-btn');
+        const createServiceSection = document.getElementById('create-service-section');
+        const myServicesSection = document.getElementById('my-services-section');
+        const postServiceForm = document.getElementById('post-service-form');
+        const myServicesList = document.getElementById('my-services-list');
+        const logoutBtn = document.getElementById('logout-btn');
+        const deleteAccountBtn = document.getElementById('delete-account-btn');
+        const messagesBtn = document.getElementById('messages-btn'); // Bouton messages
 
-// --- Fonctions du Profil ---
-
-// Charge les informations du profil
-async function loadUserProfile() {
-    const user = getUserInfo();
-    const token = getToken();
-
-    // Redirige si pas connecté, mais seulement si la fonction de vérification n'a pas déjà redirigé.
-    if (!user || !token) {
-        if (!checkAuthAndRedirect()) { // Appelle et vérifie si la redirection a eu lieu
-             window.location.href = 'login.html'; // Fallback si checkAuthAndRedirect ne redirige pas pour une raison quelconque
+        if (!token) {
+            showAlert('Veuillez vous connecter pour accéder à votre profil.', 'error', 'profile-alert-message');
+            setTimeout(() => redirectTo('login.html'), 2000);
+            return;
         }
-        return;
-    }
 
-    // Récupérer les informations de l'utilisateur depuis le backend pour être sûr qu'elles sont à jour
-    try {
-        const response = await fetch(`${BASE_URL}/users/me`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
+        let currentUserData = null; // Pour stocker les données de l'utilisateur
+
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = await response.json();
+
+                if (response.ok) {
+                    currentUserData = user; // Stocker les données
+                    userProfileDiv.innerHTML = `
+                        <p><strong>Nom:</strong> ${user.lastname}</p>
+                        <p><strong>Prénom:</strong> ${user.firstname}</p>
+                        <p><strong>Téléphone:</strong> ${user.phone || 'Non renseigné'}</p>
+                        <p><strong>Type de compte:</strong> <span id="account-type-display">${user.accountType}</span></p>
+                        <p><strong>Inscrit depuis:</strong> ${new Date(user.createdAt).toLocaleDateString('fr-FR')}</p>
+                    `;
+                    updateProfileUI(user.accountType);
+                } else {
+                    showAlert(user.error || "Erreur lors du chargement du profil.", 'error', 'profile-alert-message');
+                }
+            } catch (error) {
+                console.error('Erreur chargement profil:', error);
+                showAlert("Erreur réseau lors du chargement du profil.", 'error', 'profile-alert-message');
             }
-        });
+        }
 
-        if (!response.ok) {
-            // Si le token est invalide ou expiré, déconnecter l'utilisateur
-            if (response.status === 401 || response.status === 403) {
-                alert('Votre session a expiré. Veuillez vous reconnecter.');
-                handleLogout();
+        async function updateAccountType() {
+            if (!currentUserData) return;
+
+            const newAccountType = currentUserData.accountType === 'Particulier' ? 'Prestataire' : 'Particulier';
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/me`, { // Utilise /users/me pour la modification
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ accountType: newAccountType })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentUserData.accountType = newAccountType; // Mettre à jour localement
+                    localStorage.setItem('user', JSON.stringify(currentUserData)); // Mettre à jour le localStorage
+                    document.getElementById('account-type-display').textContent = newAccountType;
+                    updateProfileUI(newAccountType);
+                    showAlert('Type de compte mis à jour avec succès !', 'success', 'profile-alert-message');
+                } else {
+                    showAlert(data.error || "Erreur lors de la mise à jour du type de compte.", 'error', 'profile-alert-message');
+                }
+            } catch (error) {
+                console.error('Erreur mise à jour type de compte:', error);
+                showAlert("Erreur réseau ou serveur lors de la mise à jour.", 'error', 'profile-alert-message');
+            }
+        }
+
+        function updateProfileUI(accountType) {
+            if (accountType === 'Prestataire') {
+                createServiceSection.classList.remove('hidden');
+                myServicesSection.classList.remove('hidden');
+                fetchMyServices();
+            } else {
+                createServiceSection.classList.add('hidden');
+                myServicesSection.classList.add('hidden');
+            }
+        }
+
+        async function fetchMyServices() {
+            if (!currentUserData || currentUserData.accountType !== 'Prestataire') {
+                myServicesList.innerHTML = '<p>Vous devez être Prestataire pour voir vos services.</p>';
                 return;
             }
-            throw new Error('Impossible de charger le profil utilisateur.');
-        }
+            try {
+                const response = await fetch(`${API_BASE_URL}/services/my-services`, { // Nouvelle route pour les services de l'utilisateur
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const services = await response.json();
 
-        const updatedUser = await response.json();
-        setUserInfo(updatedUser); // Mettre à jour les infos dans localStorage avec les données fraîches
+                if (response.ok) {
+                    myServicesList.innerHTML = '';
+                    if (services.length === 0) {
+                        myServicesList.innerHTML = '<p>Vous n\'avez pas encore posté de service.</p>';
+                        return;
+                    }
+                    services.forEach(service => {
+                        const serviceItem = document.createElement('div');
+                        serviceItem.classList.add('my-service-item');
+                        serviceItem.innerHTML = `
+                            <div class="service-text">
+                                <p><strong>Service:</strong> ${service.content}</p>
+                                <p><strong>Lieu:</strong> ${service.location}</p>
+                                <p><small>Posté le: ${new Date(service.createdAt).toLocaleDateString('fr-FR')}</small></p>
+                            </div>
+                            <div class="service-actions">
+                                <button class="btn btn-primary edit-service-btn" data-id="${service._id}" data-content="${service.content}" data-location="${service.location}">Modifier</button>
+                                <button class="btn btn-danger delete-service-btn" data-id="${service._id}">Supprimer</button>
+                            </div>
+                        `;
+                        myServicesList.appendChild(serviceItem);
+                    });
 
-        // Afficher les informations actuelles
-        document.getElementById('profileLastname').textContent = updatedUser.lastname || 'Non renseigné';
-        document.getElementById('profileFirstname').textContent = updatedUser.firstname || 'Non renseigné';
-        document.getElementById('profilePhone').textContent = updatedUser.phone || 'Non renseigné';
-        document.getElementById('profileAccountType').textContent = updatedUser.accountType || 'Non défini';
+                    // Ajouter les écouteurs pour modifier/supprimer
+                    document.querySelectorAll('.edit-service-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const serviceId = e.target.dataset.id;
+                            const currentContent = e.target.dataset.content;
+                            const currentLocation = e.target.dataset.location;
+                            const newContent = prompt('Modifier le contenu du service:', currentContent);
+                            const newLocation = prompt('Modifier le lieu du service:', currentLocation);
+                            if (newContent !== null && newLocation !== null && newContent.trim() !== '' && newLocation.trim() !== '') {
+                                updateService(serviceId, newContent.trim(), newLocation.trim());
+                            }
+                        });
+                    });
 
-        // Remplir les champs du formulaire de modification
-        document.getElementById('editLastname').value = updatedUser.lastname || '';
-        document.getElementById('editFirstname').value = updatedUser.firstname || '';
-        document.getElementById('editPhone').value = updatedUser.phone || '';
-        if (updatedUser.accountType === 'Particulier') {
-            document.getElementById('editAccountTypeParticulier').checked = true;
-        } else if (updatedUser.accountType === 'Prestataire') {
-            document.getElementById('editAccountTypePrestataire').checked = true;
-        }
+                    document.querySelectorAll('.delete-service-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const serviceId = e.target.dataset.id;
+                            if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
+                                deleteService(serviceId);
+                            }
+                        });
+                    });
 
-        // Afficher/cacher la section prestataire
-        const prestataireActions = document.getElementById('prestataireActions');
-        if (updatedUser.accountType === 'Prestataire') {
-            if (prestataireActions) prestataireActions.style.display = 'block';
-            loadMyServices(); // Charge les services du prestataire
-        } else {
-            if (prestataireActions) prestataireActions.style.display = 'none';
-        }
-
-    } catch (error) {
-        console.error('Erreur lors du chargement du profil utilisateur:', error);
-        showMessage('profileInfo', 'Erreur lors du chargement de votre profil. Veuillez réessayer.');
-    }
-}
-
-// Gère la modification du profil
-async function handleEditProfile(event) {
-    event.preventDefault();
-    const token = getToken();
-    const userInfo = getUserInfo(); // Obtenir les informations actuelles pour l'ID
-
-    if (!token || !userInfo) {
-        showMessage('editProfileMessage', 'Non autorisé. Veuillez vous reconnecter.', 'error');
-        handleLogout();
-        return;
-    }
-
-    const lastname = document.getElementById('editLastname').value;
-    const firstname = document.getElementById('editFirstname').value;
-    const phone = document.getElementById('editPhone').value;
-    const accountType = document.querySelector('input[name="accountType"]:checked').value;
-
-    try {
-        const response = await fetch(`${BASE_URL}/users/me`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ lastname, firstname, phone, accountType }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            setUserInfo(data.user); // Met à jour les infos utilisateur dans localStorage avec les nouvelles données
-            showMessage('editProfileMessage', 'Profil mis à jour avec succès !', 'success');
-            loadUserProfile(); // Recharge les infos affichées pour refléter les changements
-            // Cacher le formulaire de modification et réafficher les infos de profil
-            document.getElementById('editProfileFormContainer').style.display = 'none';
-            document.getElementById('profileInfo').style.display = 'block';
-        } else {
-            showMessage('editProfileMessage', data.error || 'Erreur lors de la mise à jour du profil.');
-        }
-    } catch (error) {
-        console.error('Erreur:', error);
-        showMessage('editProfileMessage', 'Une erreur est survenue lors de la mise à jour.');
-    }
-}
-
-// Gère le changement de mot de passe
-async function handleChangePassword(event) {
-    event.preventDefault();
-    const token = getToken();
-    const userInfo = getUserInfo();
-
-    if (!token || !userInfo) {
-        showMessage('changePasswordMessage', 'Non autorisé. Veuillez vous reconnecter.', 'error');
-        handleLogout();
-        return;
-    }
-
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-
-    if (newPassword.length < 6) {
-        showMessage('changePasswordMessage', 'Le nouveau mot de passe doit contenir au moins 6 caractères.', 'error');
-        return;
-    }
-    if (newPassword !== confirmNewPassword) {
-        showMessage('changePasswordMessage', 'Les mots de passe ne correspondent pas.', 'error');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${BASE_URL}/users/me`, {
+                } else {
+                    showAlert(
