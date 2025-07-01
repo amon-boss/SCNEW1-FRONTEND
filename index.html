@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Service Connect - Accueil</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Connect - Accueil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main style="text-align:center; margin-top: 120px;">
-    <h1 style="font-size: 3rem; margin-bottom: 40px; font-weight: 700; color: #fff; text-shadow: 0 0 10px #6d4bca;">Bienvenue sur Service Connect</h1>
-    <button onclick="window.location.href='inscription.html'" style="margin:10px 20px; font-size:1.2rem; min-width:160px;">S'inscrire</button>
-    <button onclick="window.location.href='connexion.html'" style="margin:10px 20px; font-size:1.2rem; min-width:160px;">Se connecter</button>
-  </main>
-  <script src="script.js"></script>
+    <div class="container welcome-container">
+        <header class="main-header">
+            <h1>Bienvenue sur Service Connect 🚀</h1>
+            <p>La plateforme qui vous connecte aux meilleurs services et prestataires.</p>
+        </header>
+
+        <main class="welcome-content">
+            <div class="button-group">
+                <a href="register.html" class="btn btn-primary animate-btn">S'inscrire</a>
+                <a href="login.html" class="btn btn-secondary animate-btn">Se connecter</a>
+            </div>
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger le footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-placeholder').innerHTML = html;
+                });
+        });
+    </script>
 </body>
 </html>
