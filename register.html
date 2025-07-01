@@ -61,13 +61,15 @@
                     document.getElementById('footer-placeholder').innerHTML = html;
                 });
 
-            // Lier le formulaire d'inscription à la fonction JS
+            // Lier la fonction handleRegister via window
             const registerForm = document.getElementById('registerForm');
-            if (registerForm) {
+            if (registerForm && typeof handleRegister === 'function') {
                 registerForm.addEventListener('submit', handleRegister);
+            } else {
+                alert("❌ La fonction handleRegister n'est pas disponible.");
             }
 
-            checkAuthAndRedirect(); // Redirection auto si déjà connecté
+            checkAuthAndRedirect();
         });
     </script>
 </body>
