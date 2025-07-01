@@ -50,31 +50,14 @@
     <script src="js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
             fetch('components/footer.html')
                 .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            checkAuthAndRedirect(); // Vérifie si l'utilisateur est connecté, sinon redirige
-            loadServices(); // Charge les services au démarrage
-            setupDashboardEvents(); // Configure les écouteurs d'événements
+                .then(html => document.getElementById('footer-placeholder').innerHTML = html);
+
+            checkAuthAndRedirect();
+            loadServices();
+            setupDashboardEvents();
         });
     </script>
-    <div id="footer-placeholder"></div>
-    <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            // Ajoutez ici d'autres fonctions d'initialisation spécifiques à cette page si nécessaire
-        });
-    </script>
-</body>
-</html>
 </body>
 </html>
