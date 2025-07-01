@@ -3,71 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Connect - Inscription</title>
+    <title>S'inscrire - Service Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container form-container">
-        <header class="main-header">
+    <header>
+        <a href="index.html" class="logo">Service Connect</a>
+        <nav>
+            <ul>
+                <li><a href="login.html">Se connecter</a></li>
+                <li><a href="register.html">S'inscrire</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="auth-form animated">
             <h2>Inscription</h2>
-        </header>
-        <form id="registerForm" class="auth-form">
-            <div class="input-group">
-                <label for="phone">Numéro de téléphone</label>
-                <input type="tel" id="phone" name="phone" required placeholder="Ex: 07xxxxxxxx" pattern="[0-9]{10}">
-                <small class="error-message" id="phoneError"></small>
-            </div>
-            <div class="input-group">
-                <label for="lastname">Nom</label>
-                <input type="text" id="lastname" name="lastname" required placeholder="Votre nom">
-            </div>
-            <div class="input-group">
-                <label for="firstname">Prénom</label>
-                <input type="text" id="firstname" name="firstname" required placeholder="Votre prénom">
-            </div>
-            <div class="input-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" required minlength="6" placeholder="Minimum 6 caractères">
-                <small class="error-message" id="passwordError"></small>
-            </div>
-            <div class="input-group">
-                <label>Type de compte</label>
-                <div class="radio-group">
+            <div id="alert-message" class="alert hidden"></div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="phone">Numéro de téléphone:</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="Ex: 0700000000">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Nom:</label>
+                    <input type="text" id="lastname" name="lastname" required>
+                </div>
+                <div class="form-group">
+                    <label for="firstname">Prénom:</label>
+                    <input type="text" id="firstname" name="firstname" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe:</label>
+                    <input type="password" id="password" name="password" minlength="6" required placeholder="Au moins 6 caractères">
+                </div>
+                <div class="form-group">
+                    <label>Type de compte:</label>
                     <input type="radio" id="accountTypeParticulier" name="accountType" value="Particulier" checked>
                     <label for="accountTypeParticulier">Particulier</label>
                     <input type="radio" id="accountTypePrestataire" name="accountType" value="Prestataire">
                     <label for="accountTypePrestataire">Prestataire</label>
                 </div>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="acceptTerms" required>
-                <label for="acceptTerms">J'accepte la <a href="terms.html" target="_blank">politique d'utilisation</a></label>
-            </div>
-            <button type="submit" class="btn btn-primary animate-btn">S'inscrire</button>
-            <p class="form-link">Déjà un compte ? <a href="login.html">Se connecter</a></p>
-            <div id="registerMessage" class="message-area"></div>
-        </form>
-    </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">J'accepte la <a href="terms.html" target="_blank">politique d'utilisation</a></label>
+                </div>
+                <button type="submit" class="btn btn-block">S'inscrire</button>
+            </form>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
+
     <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            // checkAuthAndRedirect() est appelé globalement dans script.js si cette page est chargée
-            // Assurez-vous que le gestionnaire d'événements pour le formulaire est attaché
-            const registerForm = document.getElementById('registerForm');
-            if (registerForm) {
-                registerForm.addEventListener('submit', handleRegister);
-            }
-        });
-    </script>
 </body>
 </html>
