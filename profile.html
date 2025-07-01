@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Connect - Mon Profil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container profile-container">
+        <header class="main-header">
+            <a href="dashboard.html" class="back-link animate-btn"><i class="fas fa-arrow-left"></i> Retour au fil</a>
+            <h2>Mon Profil</h2>
+        </header>
+
+        <main class="profile-content">
+            <div class="profile-section" id="profileInfo">
+                <h3>Mes informations personnelles</h3>
+                <p><strong>Nom:</strong> <span id="profileLastname"></span></p>
+                <p><strong>Prénom:</strong> <span id="profileFirstname"></span></p>
+                <p><strong>Téléphone:</strong> <span id="profilePhone"></span></p>
+                <p><strong>Type de compte:</strong> <span id="profileAccountType"></span></p>
+                <button class="btn btn-secondary animate-btn" id="editProfileBtn">Modifier le profil</button>
+                <button class="btn btn-tertiary animate-btn" id="changePasswordBtn">Changer le mot de passe</button>
+            </div>
+
+            <div class="profile-section" id="editProfileFormContainer" style="display:none;">
+                <h3>Modifier mon profil</h3>
+                <form id="editProfileForm" class="auth-form">
+                    <div class="input-group">
+                        <label for="editLastname">Nom</label>
+                        <input type="text" id="editLastname" name="lastname">
+                    </div>
+                    <div class="input-group">
+                        <label for="editFirstname">Prénom</label>
+                        <input type="text" id="editFirstname" name="firstname">
+                    </div>
+                    <div class="input-group">
+                        <label for="editPhone">Numéro de téléphone</label>
+                        <input type="tel" id="editPhone" name="phone">
+                    </div>
+                    <div class="input-group">
+                        <label>Changer le type de compte</label>
+                        <div class="radio-group">
+                            <input type="radio" id="editAccountTypeParticulier" name="accountType" value="Particulier">
+                            <label for="editAccountTypeParticulier">Particulier</label>
+                            <input type="radio" id="editAccountTypePrestataire" name="accountType" value="Prestataire">
+                            <label for="editAccountTypePrestataire">Prestataire</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary animate-btn">Sauvegarder les modifications</button>
+                    <button type="button" class="btn btn-secondary animate-btn" id="cancelEditProfileBtn">Annuler</button>
+                    <div id="editProfileMessage" class="message-area"></div>
+                </form>
+            </div>
+
+            <div class="profile-section" id="changePasswordFormContainer" style="display:none;">
+                <h3>Changer mon mot de passe</h3>
+                <form id="changePasswordForm" class="auth-form">
+                    <div class="input-group">
+                        <label for="newPassword">Nouveau mot de passe</label>
+                        <input type="password" id="newPassword" name="password" required minlength="6" placeholder="Minimum 6 caractères">
+                    </div>
+                    <div class="input-group">
+                        <label for="confirmNewPassword">Confirmer le nouveau mot de passe</label>
+                        <input type="password" id="confirmNewPassword" required minlength="6" placeholder="Confirmer le mot de passe">
+                    </div>
+                    <button type="submit" class="btn btn-primary animate-btn">Changer le mot de passe</button>
+                    <button type="button" class="btn btn-secondary animate-btn" id="cancelChangePasswordBtn">Annuler</button>
+                    <div id="changePasswordMessage" class="message-area"></div>
+                </form>
+            </div>
+
+            <div class="profile-section prestataire-only" id="prestataireActions">
+                <h3>Actions Prestataire</h3>
+                <button class="btn btn-primary animate-btn" id="addServiceBtn">Ajouter un service</button>
+                <h4>Mes services postés</h4>
+                <div id="myServicesList">
+                    <p id="noMyServicesMessage" style="display:none; text-align: center; color: #777;">Vous n'avez pas encore posté de services.</p>
+                </div>
+
+                <div id="addServiceFormContainer" class="service-form" style="display:none;">
+                    <h4>Ajouter un nouveau service</h4>
+                    <form id="addServiceForm">
+                        <div class="input-group">
+                            <label for="serviceContent">Description du service</label>
+                            <textarea id="serviceContent" required rows="5" placeholder="Décrivez votre service ici..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="serviceLocation">Lieu du service</label>
+                            <input type="text" id="serviceLocation" required placeholder="Ville, quartier...">
+                        </div>
+                        <div class="input-group">
+                            <label for="serviceCategory">Catégorie</label>
+                            <select id="serviceCategory" required>
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Plomberie">Plomberie</option>
+                                <option value="Electricité">Électricité</option>
+                                <option value="Jardinage">Jardinage</option>
+                                <option value="Ménage">Ménage</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Réparation">Réparation</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary animate-btn">Poster le service</button>
+                        <button type="button" class="btn btn-secondary animate-btn" id="cancelAddServiceBtn">Annuler</button>
+                        <div id="addServiceMessage" class="message-area"></div>
+                    </form>
+                </div>
+
+                <div id="editServiceFormContainer" class="service-form" style="display:none;">
+                    <h4>Modifier un service</h4>
+                    <form id="editServiceForm">
+                        <input type="hidden" id="editServiceId">
+                        <div class="input-group">
+                            <label for="editServiceContent">Description du service</label>
+                            <textarea id="editServiceContent" required rows="5"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="editServiceLocation">Lieu du service</label>
+                            <input type="text" id="editServiceLocation" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="editServiceCategory">Catégorie</label>
+                            <select id="editServiceCategory" required>
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Plomberie">Plomberie</option>
+                                <option value="Electricité">Électricité</option>
+                                <option value="Jardinage">Jardinage</option>
+                                <option value="Ménage">Ménage</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Réparation">Réparation</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary animate-btn">Sauvegarder les modifications</button>
+                        <button type="button" class="btn btn-secondary animate-btn" id="cancelEditServiceBtn">Annuler</button>
+                        <div id="editServiceMessage" class="message-area"></div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="profile-actions-bottom">
+                <button class="btn btn-quaternary animate-btn" id="messagesBtn">Accéder à mes messages</button>
+                <button class="btn btn-danger animate-btn" id="logoutBtn">Déconnexion</button>
+                <button class="btn btn-danger animate-btn" id="deleteAccountBtn">Supprimer mon compte</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger le footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-placeholder').innerHTML = html;
+                });
+            checkAuthAndRedirect(); // Vérifie si l'utilisateur est connecté
+            loadUserProfile(); // Charge les données du profil
+            setupProfileEvents(); // Configure les événements du profil
+        });
+    </script>
+</body>
+                          </html>
