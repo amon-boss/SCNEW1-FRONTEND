@@ -1,4 +1,4 @@
-const BASE_URL = 'https://scnew1.onrender.com/api'; // Correction: Ajouter /api car vos routes backend commencent par /api
+const BASE_URL = 'https://scnew1.onrender.com'; // Correction: Ajouter /api car vos routes backend commencent par /api
 
 // Helper pour afficher les messages
 function showMessage(elementId, message, type = 'error') {
