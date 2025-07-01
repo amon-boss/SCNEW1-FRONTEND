@@ -1,71 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Service Connect - Inscription</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Connect - Inscription</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="fade-in" style="margin-top: 50px;">
-    <h2 style="text-align:center; margin-bottom: 30px; color: #fff;">Créer un compte</h2>
-    <form id="inscription-form" novalidate>
-      <input type="text" name="nom" placeholder="Nom" required minlength="2" />
-      <input type="text" name="prenom" placeholder="Prénom" required minlength="2" />
-      <input type="tel" name="telephone" placeholder="Numéro de téléphone" pattern="^\+?\d{8,15}$" required />
-      <input type="password" name="password" placeholder="Mot de passe (6 caractères minimum)" minlength="6" required />
-      <select name="typeCompte" required>
-        <option value="" disabled selected>Choisissez un type de compte</option>
-        <option value="particulier">Particulier</option>
-        <option value="prestataire">Prestataire</option>
-      </select>
-      <label style="display:flex; align-items:center; gap: 6px; margin: 15px 0;">
-        <input type="checkbox" name="politique" required />
-        <span>J'accepte la politique d'utilisation</span>
-      </label>
-      <button type="submit">Inscription</button>
-    </form>
-    <p style="text-align:center; margin-top: 20px; color:#ccc;">
-      Déjà un compte ? <a href="connexion.html" style="color:#6d4bca;">Connectez-vous ici</a>
-    </p>
-  </main>
+    <div class="container form-container">
+        <header class="main-header">
+            <h2>Inscription</h2>
+        </header>
+        <form id="registerForm" class="auth-form">
+            <div class="input-group">
+                <label for="phone">Numéro de téléphone</label>
+                <input type="tel" id="phone" name="phone" required placeholder="Ex: 07xxxxxx" pattern="[0-9]{10}">
+                <small class="error-message" id="phoneError"></small>
+            </div>
+            <div class="input-group">
+                <label for="lastname">Nom</label>
+                <input type="text" id="lastname" name="lastname" required placeholder="Votre nom">
+            </div>
+            <div class="input-group">
+                <label for="firstname">Prénom</label>
+                <input type="text" id="firstname" name="firstname" required placeholder="Votre prénom">
+            </div>
+            <div class="input-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required minlength="6" placeholder="Minimum 6 caractères">
+                <small class="error-message" id="passwordError"></small>
+            </div>
+            <div class="input-group">
+                <label>Type de compte</label>
+                <div class="radio-group">
+                    <input type="radio" id="accountTypeParticulier" name="accountType" value="Particulier" checked>
+                    <label for="accountTypeParticulier">Particulier</label>
+                    <input type="radio" id="accountTypePrestataire" name="accountType" value="Prestataire">
+                    <label for="accountTypePrestataire">Prestataire</label>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="acceptTerms" required>
+                <label for="acceptTerms">J'accepte la <a href="terms.html" target="_blank">politique d'utilisation</a></label>
+            </div>
+            <button type="submit" class="btn btn-primary animate-btn">S'inscrire</button>
+            <p class="form-link">Déjà un compte ? <a href="login.html">Se connecter</a></p>
+            <div id="registerMessage" class="message-area"></div>
+        </form>
+    </div>
 
-  <script src="script.js"></script>
-  <script>
-    document.getElementById('inscription-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const form = e.target;
-      if (!form.checkValidity()) {
-        alert("Veuillez remplir correctement tous les champs.");
-        return;
-      }
-
-      const nom = form.nom.value.trim();
-      const prenom = form.prenom.value.trim();
-      const telephone = form.telephone.value.trim();
-      const password = form.password.value;
-      const typeCompte = form.typeCompte.value;
-      const politique = form.politique.checked;
-
-      if (!politique) {
-        alert("Vous devez accepter la politique d'utilisation.");
-        return;
-      }
-
-      try {
-        const data = await registerUser({ nom, prenom, telephone, password, typeCompte });
-        if (data.success) {
-          alert('Inscription réussie ! Vous allez être redirigé vers la page de connexion.');
-          window.location.href = 'connexion.html';
-        } else {
-          alert(data.error || 'Erreur lors de l\'inscription');
-        }
-      } catch (err) {
-        alert(err.message || 'Erreur réseau ou serveur.');
-        console.error(err);
-      }
-    });
-  </script>
+    <div id="footer-placeholder"></div>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger le footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-placeholder').innerHTML = html;
+                });
+        });
+    </script>
 </body>
 </html>
