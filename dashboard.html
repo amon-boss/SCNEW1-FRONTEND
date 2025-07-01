@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Connect - Fil d'actualités</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <a href="profile.html" class="profile-icon animate-btn" title="Mon Profil">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+                <span class="user-greeting" id="userGreeting">Bonjour, Utilisateur!</span>
+            </div>
+            <div class="header-center">
+                <h1>Fil d'actualités</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" id="searchServices" placeholder="Rechercher des services..." class="search-input">
+                    <button class="search-button animate-btn" id="searchButton"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filter-dropdown">
+                    <select id="filterCategory" class="filter-select">
+                        <option value="">Toutes catégories</option>
+                        <option value="Plomberie">Plomberie</option>
+                        <option value="Electricité">Électricité</option>
+                        <option value="Jardinage">Jardinage</option>
+                        <option value="Ménage">Ménage</option>
+                        <option value="Informatique">Informatique</option>
+                        <option value="Réparation">Réparation</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <main class="feed-content" id="servicesFeed">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <p id="noServicesMessage" style="display:none; text-align: center; color: #777;">Aucun service trouvé pour le moment.</p>
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger le footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer-placeholder').innerHTML = html;
+                });
+            checkAuthAndRedirect(); // Vérifie si l'utilisateur est connecté, sinon redirige
+            loadServices(); // Charge les services au démarrage
+            setupDashboardEvents(); // Configure les écouteurs d'événements
+        });
+    </script>
+</body>
+</html>
