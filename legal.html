@@ -3,58 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Connect - Mentions légales</title>
+    <title>Mentions légales - Service Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container text-page-container">
-        <header class="main-header">
-            <a href="javascript:history.back()" class="back-link animate-btn"><i class="fas fa-arrow-left"></i> Retour</a>
-            <h2>Mentions légales</h2>
-        </header>
-        <main class="text-content">
-            <h3>1. Éditeur du site</h3>
-            <p>Nom du site : Service Connect<br>
-            Éditeur : [Ampnc N'doli Christ-Kevin ]<br>
-            Forme juridique : [Étudiant]<br>
-            Adresse du siège social : [Côte d'Ivoire, Abidjan, Abobo.]<br>
-            Email : [monchristr34@gmail.com]<br>
-            Téléphone : [+2250768388770]</p>
+    <header>
+        <a href="index.html" class="logo">Service Connect</a>
+        <nav>
+            <ul>
+                <li><a href="login.html">Se connecter</a></li>
+                <li><a href="register.html">S'inscrire</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <h3>2. Directeur de la publication</h3>
-            <p>[Amon N'doli Christ-Kevin ]</p>
+    <main class="main-content container">
+        <section class="policy-section animated">
+            <h1>Mentions légales</h1>
 
-            <h3>3. Hébergement</h3>
-            <p>Nom de l’hébergeur : [Render]<br>
-            Adresse : [support@render.com]</p>
+            <h2>1. Éditeur du site</h2>
+            <p>Nom du site : Service Connect</p>
+            <p>Éditeur : Ampnc N'doli Christ-Kevin</p>
+            <p>Forme juridique : Étudiant</p>
+            <p>Adresse du siège social : Côte d'Ivoire, Abidjan, Abobo.</p>
+            <p>Email : <a href="mailto:monchristr34@gmail.com">monchristr34@gmail.com</a></p>
+            <p>Téléphone : +2250768388770</p>
 
-            <h3>4. Propriété intellectuelle</h3>
+            <h2>2. Directeur de la publication</h2>
+            <p>Amon N'doli Christ-Kevin</p>
+
+            <h2>3. Hébergement</h2>
+            <p>Nom de l’hébergeur : Render</p>
+            <p>Adresse : <a href="mailto:support@render.com">support@render.com</a></p>
+
+            <h2>4. Propriété intellectuelle</h2>
             <p>L’ensemble des contenus présents sur Service Connect (textes, images, logos, vidéos, etc.) sont la propriété exclusive de l’éditeur ou de ses partenaires. Toute reproduction, modification ou utilisation sans autorisation est interdite.</p>
 
-            <h3>5. Données personnelles</h3>
+            <h2>5. Données personnelles</h2>
             <p>Pour plus d’informations sur la collecte et le traitement de vos données personnelles, veuillez consulter notre <a href="privacy.html">Politique de confidentialité</a>.</p>
 
-            <h3>6. Responsabilité</h3>
+            <h2>6. Responsabilité</h2>
             <p>Service Connect s’efforce d’assurer l’exactitude et la mise à jour des informations publiées sur le site. Toutefois, l’éditeur ne peut être tenu responsable des erreurs, omissions, ou dommages liés à l’utilisation du site.</p>
 
-            <h3>7. Loi applicable</h3>
+            <h2>7. Loi applicable</h2>
             <p>Les présentes mentions légales sont soumises au droit Ivoirien.</p>
-        </main>
-    </div>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
+
     <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-        });
-    </script>
 </body>
 </html>
