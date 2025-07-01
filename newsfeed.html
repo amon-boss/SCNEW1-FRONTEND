@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fil d'actualités - Service Connect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body id="newsfeed-page">
+    <header>
+        <a href="newsfeed.html" class="logo">Service Connect</a>
+        <nav>
+            </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="newsfeed-header">
+            <i id="profile-icon" class="fas fa-user-circle profile-icon"></i>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Rechercher un service ou un lieu...">
+                <button id="search-button"><i class="fas fa-search"></i></button>
+            </div>
+            </section>
+
+        <div id="newsfeed-alert-message" class="alert hidden"></div>
+
+        <section class="service-list" id="service-list">
+            <p>Chargement des services...</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
