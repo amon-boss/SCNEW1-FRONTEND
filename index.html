@@ -3,51 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Connect - Accueil</title>
+    <title>Service Connect - Connectez-vous aux services</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container welcome-container">
-        <header class="main-header">
-            <h1>Bienvenue sur Service Connect 🚀</h1>
-            <p>La plateforme qui vous connecte aux meilleurs services et prestataires.</p>
-        </header>
+    <header>
+        <a href="index.html" class="logo">Service Connect</a>
+        <nav>
+            <ul>
+                <li><a href="login.html">Se connecter</a></li>
+                <li><a href="register.html">S'inscrire</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <main class="welcome-content">
-            <div class="button-group">
-                <a href="register.html" class="btn btn-primary animate-btn">S'inscrire</a>
-                <a href="login.html" class="btn btn-secondary animate-btn">Se connecter</a>
+    <main class="main-content">
+        <section class="hero animated">
+            <h1>Trouvez le service parfait, ou offrez le vôtre.</h1>
+            <p>Service Connect met en relation les particuliers et les prestataires de services locaux. Facile, rapide et fiable.</p>
+            <div class="btn-group">
+                <a href="register.html" class="btn">S'inscrire</a>
+                <a href="login.html" class="btn btn-secondary">Se connecter</a>
             </div>
-        </main>
-    </div>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
+
     <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-        });
-    </script>
-    <div id="footer-placeholder"></div>
-    <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            // Ajoutez ici d'autres fonctions d'initialisation spécifiques à cette page si nécessaire
-        });
-    </script>
-</body>
-</html>
 </body>
 </html>
