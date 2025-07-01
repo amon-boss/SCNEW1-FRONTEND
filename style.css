@@ -687,3 +687,89 @@ body {
         margin: 0 8px;
     }
   }
+/* FOOTER */
+.main-footer {
+    background-color: var(--text-color-dark); /* Fond sombre pour le contraste */
+    color: var(--text-color-light); /* Texte clair */
+    padding: 30px 20px; /* Espacement intérieur */
+    text-align: center; /* Centrage du contenu */
+    border-top: 5px solid var(--secondary-color); /* Ligne colorée au-dessus */
+    margin-top: auto; /* Pousse le footer en bas de la page */
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère vers le haut */
+}
+
+.footer-content {
+    max-width: 900px; /* Largeur maximale du contenu */
+    margin: 0 auto; /* Centrage du contenu dans le footer */
+    display: flex;
+    flex-direction: column; /* Disposition verticale par défaut */
+    gap: 20px; /* Espacement entre les sections */
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap; /* Permet aux liens de passer à la ligne sur petits écrans */
+    justify-content: center; /* Centrage des liens */
+    gap: 15px; /* Espacement entre les liens */
+}
+
+.footer-links a {
+    color: var(--text-color-light); /* Couleur du texte des liens */
+    text-decoration: none; /* Pas de soulignement par défaut */
+    font-size: 0.95em; /* Taille de police légèrement plus petite */
+    transition: color 0.3s ease, transform 0.2s ease; /* Transitions douces */
+    padding: 5px 10px; /* Petit padding pour les zones de clic */
+    border-radius: 5px; /* Bords légèrement arrondis */
+}
+
+.footer-links a:hover {
+    color: var(--secondary-color); /* Couleur au survol */
+    text-decoration: underline; /* Soulignement au survol */
+    transform: translateY(-2px); /* Légère animation au survol */
+}
+
+.social-links {
+    margin-top: 15px; /* Espacement au-dessus des icônes sociales */
+}
+
+.social-links a {
+    color: var(--text-color-light); /* Couleur des icônes sociales */
+    font-size: 1.8em; /* Taille des icônes */
+    margin: 0 12px; /* Espacement entre les icônes */
+    transition: color 0.3s ease, transform 0.2s ease; /* Transitions douces */
+}
+
+.social-links a:hover {
+    color: var(--secondary-color); /* Couleur au survol */
+    transform: scale(1.2); /* Zoom au survol */
+}
+
+.copyright {
+    font-size: 0.85em; /* Taille de police pour le copyright */
+    color: #bbb; /* Couleur légèrement plus claire pour le copyright */
+    margin-top: 15px; /* Espacement au-dessus du copyright */
+}
+
+/* Media Queries pour la réactivité du footer (à ajouter à la fin de votre style.css) */
+@media (max-width: 768px) {
+    .footer-content {
+        gap: 15px; /* Réduire l'espacement sur les petits écrans */
+    }
+    .footer-links {
+        flex-direction: column; /* Les liens s'empilent verticalement */
+        gap: 8px; /* Espacement réduit entre les liens empilés */
+    }
+    .social-links a {
+        font-size: 1.5em; /* Réduire la taille des icônes sur mobile */
+        margin: 0 8px; /* Réduire l'espacement entre les icônes */
+    }
+}
+
+@media (max-width: 480px) {
+    .main-footer {
+        padding: 20px 15px; /* Réduire le padding sur les très petits écrans */
+    }
+    .footer-links a {
+        font-size: 0.9em;
+    }
+}
