@@ -3,75 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Connect - Mon Profil</title>
+    <title>Mon Profil - Service Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <div class="container profile-container">
-        <header class="main-header">
-            <a href="dashboard.html" class="back-link animate-btn"><i class="fas fa-arrow-left"></i> Retour au fil</a>
-            <h2>Mon Profil</h2>
-        </header>
+<body id="profile-page">
+    <header>
+        <a href="newsfeed.html" class="logo">Service Connect</a>
+        <nav>
+            <ul>
+                <li><a href="newsfeed.html">Fil d'actualités</a></li>
+                </ul>
+        </nav>
+    </header>
 
-        <!-- ... contenu inchangé ... -->
+    <main class="main-content container">
+        <div id="profile-alert-message" class="alert hidden"></div>
 
-    </div>
+        <section class="profile-details animated">
+            <h2>Mes Informations de Profil</h2>
+            <div id="user-profile-details">
+                <p>Chargement du profil...</p>
+            </div>
+            <button id="toggle-account-type-btn" class="btn">Changer de type de compte</button>
+        </section>
+
+        <section class="profile-actions animated">
+            <h2>Actions du Compte</h2>
+            <button id="messages-btn" class="btn">Mes messages</button>
+            <button id="logout-btn" class="btn btn-secondary">Se déconnecter</button>
+            <button id="delete-account-btn" class="btn btn-danger">Supprimer mon compte</button>
+        </section>
+
+        <section id="create-service-section" class="service-form animated hidden">
+            <h2>Poster un nouveau service</h2>
+            <form id="post-service-form">
+                <div class="form-group">
+                    <label for="service-content">Contenu du service:</label>
+                    <textarea id="service-content" name="content" rows="5" required placeholder="Décrivez votre service..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="service-location">Lieu du service:</label>
+                    <input type="text" id="service-location" name="location" required placeholder="Ex: Abidjan, Cocody">
+                </div>
+                <button type="submit" class="btn btn-block">Publier le service</button>
+            </form>
+        </section>
+
+        <section id="my-services-section" class="my-services-section animated hidden">
+            <h2>Mes Services Postés</h2>
+            <div id="my-services-list">
+                <p>Chargement de vos services...</p>
+            </div>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
+
     <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => document.getElementById('footer-placeholder').innerHTML = html);
-
-            checkAuthAndRedirect();
-            loadUserProfile();
-
-            // Attacher les événements manuellement
-            document.getElementById('editProfileForm')?.addEventListener('submit', handleEditProfile);
-            document.getElementById('changePasswordForm')?.addEventListener('submit', handleChangePassword);
-            document.getElementById('deleteAccountBtn')?.addEventListener('click', handleDeleteAccount);
-            document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
-            document.getElementById('addServiceForm')?.addEventListener('submit', handleAddService);
-
-            // Gestion des boutons d'affichage
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileFormContainer').style.display = 'block';
-                document.getElementById('profileInfo').style.display = 'none';
-            });
-
-            document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
-                document.getElementById('changePasswordFormContainer').style.display = 'block';
-                document.getElementById('profileInfo').style.display = 'none';
-            });
-
-            document.getElementById('cancelEditProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileFormContainer').style.display = 'none';
-                document.getElementById('profileInfo').style.display = 'block';
-            });
-
-            document.getElementById('cancelChangePasswordBtn')?.addEventListener('click', () => {
-                document.getElementById('changePasswordFormContainer').style.display = 'none';
-                document.getElementById('profileInfo').style.display = 'block';
-            });
-
-            document.getElementById('addServiceBtn')?.addEventListener('click', () => {
-                document.getElementById('addServiceFormContainer').style.display = 'block';
-            });
-
-            document.getElementById('cancelAddServiceBtn')?.addEventListener('click', () => {
-                document.getElementById('addServiceFormContainer').style.display = 'none';
-            });
-
-            document.getElementById('cancelEditServiceBtn')?.addEventListener('click', () => {
-                document.getElementById('editServiceFormContainer').style.display = 'none';
-            });
-
-            // Pour les boutons Modifier / Supprimer un service, ils sont gérés via delegation dans le JS
-        });
-    </script>
 </body>
 </html>
