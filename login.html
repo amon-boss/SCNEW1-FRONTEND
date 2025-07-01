@@ -3,52 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Connect - Connexion</title>
+    <title>Se connecter - Service Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container form-container">
-        <header class="main-header">
+    <header>
+        <a href="index.html" class="logo">Service Connect</a>
+        <nav>
+            <ul>
+                <li><a href="login.html">Se connecter</a></li>
+                <li><a href="register.html">S'inscrire</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="auth-form animated">
             <h2>Connexion</h2>
-        </header>
-        <form id="loginForm" class="auth-form">
-            <div class="input-group">
-                <label for="loginPhone">Numéro de téléphone</label>
-                <input type="text" id="loginPhone" name="phone" required placeholder="Votre numéro de téléphone">
-            </div>
-            <div class="input-group">
-                <label for="loginPassword">Mot de passe</label>
-                <input type="password" id="loginPassword" name="password" required placeholder="Votre mot de passe">
-            </div>
-            <div class="checkbox-group remember-me">
-                <input type="checkbox" id="rememberMe">
-                <label for="rememberMe">Se souvenir de moi</label>
-            </div>
-            <button type="submit" class="btn btn-primary animate-btn">Se connecter</button>
-            <p class="form-link">Pas encore de compte ? <a href="register.html">S'inscrire</a></p>
-            <div id="loginMessage" class="message-area"></div>
-        </form>
-    </div>
+            <div id="alert-message" class="alert hidden"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="identifier">Numéro de téléphone ou Nom:</label>
+                    <input type="text" id="identifier" name="identifier" required placeholder="Votre numéro ou nom">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember-me" name="remember-me">
+                    <label for="remember-me">Se souvenir de moi</label>
+                </div>
+                <button type="submit" class="btn btn-block">Se connecter</button>
+            </form>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
+
     <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            // checkAuthAndRedirect() est appelé globalement dans script.js si cette page est chargée
-            // Assurez-vous que le gestionnaire d'événements pour le formulaire est attaché
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', handleLogin);
-            }
-        });
-    </script>
 </body>
 </html>
