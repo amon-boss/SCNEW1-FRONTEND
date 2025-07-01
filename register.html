@@ -60,22 +60,15 @@
                 .then(html => {
                     document.getElementById('footer-placeholder').innerHTML = html;
                 });
+
+            // Lier le formulaire d'inscription à la fonction JS
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', handleRegister);
+            }
+
+            checkAuthAndRedirect(); // Redirection auto si déjà connecté
         });
     </script>
-    <div id="footer-placeholder"></div>
-    <script src="js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Charger le footer
-            fetch('components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                });
-            // Ajoutez ici d'autres fonctions d'initialisation spécifiques à cette page si nécessaire
-        });
-    </script>
-</body>
-</html>
 </body>
 </html>
