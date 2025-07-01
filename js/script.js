@@ -68,16 +68,15 @@ async function handleRegister(event) {
 
     const phoneError = document.getElementById('phoneError');
     const passwordError = document.getElementById('passwordError');
-    // Réinitialiser les messages d'erreur à chaque soumission
+
     if (phoneError) phoneError.textContent = '';
     if (passwordError) passwordError.textContent = '';
-
 
     if (password.length < 6) {
         if (passwordError) passwordError.textContent = 'Le mot de passe doit contenir au moins 6 caractères.';
         return;
     }
-    // Validation du numéro de téléphone (exemple simple pour 10 chiffres)
+
     if (!/^\d{10}$/.test(phone)) {
         if (phoneError) phoneError.textContent = 'Le numéro de téléphone doit contenir 10 chiffres.';
         return;
@@ -97,23 +96,24 @@ async function handleRegister(event) {
             body: JSON.stringify({ phone, lastname, firstname, password, accountType }),
         });
 
-        const data = await response.json(); // Toujours tenter de parser la réponse JSON
+        const data = await response.json();
 
-        if (response.ok) { // response.ok est vrai pour les codes de statut 2xx
+        if (response.ok) {
             showMessage('registerMessage', 'Inscription réussie ! Redirection vers la page de connexion...', 'success');
-            // Redirection après un court délai pour que l'utilisateur lise le message
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 2000);
         } else {
-            // Afficher l'erreur retournée par le backend si présente, sinon un message générique
             showMessage('registerMessage', data.error || 'Erreur lors de l\'inscription.');
         }
     } catch (error) {
         console.error('Erreur lors de l\'inscription:', error);
-        // Message pour les erreurs réseau ou autres exceptions non liées à la réponse du serveur
         showMessage('registerMessage', 'Une erreur réseau est survenue ou le serveur est inaccessible. Veuillez réessayer plus tard.');
     }
+}
+
+// ✅ Rendre la fonction visible globalement pour le navigateur (notamment sur Android)
+window.handleRegister = handleRegister;
 }
 
 // Connexion
